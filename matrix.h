@@ -1,8 +1,11 @@
 #pragma once
-#include "matfunction.h"
 #include <immintrin.h>
 #include<stdlib.h>
 #include<omp.h>
+#include<malloc.h>
+#include<string.h>
+#include<stdio.h>
+#include<stdbool.h>
 typedef struct Matrix 
 {
 	size_t rows, columns;
@@ -382,32 +385,7 @@ bool matmul_improved3_1(const Matrix *mat1, const Matrix *mat2, Matrix *ansMat)
 }
 void matmul_improved4_mul44(float *mat1, float *mat2_t, float *ansMat, const size_t row1, const size_t col1, const size_t col2)
 {
-    register float buffer[16];
-    float *buf2 = (float *) _aligned_malloc(32, sizeof(float) * 8 * 8);
-    size_t col1_b = col1 >> 3;
-    for (int i = 0; i < 4; ++i) {
-        for (int j = 0; j < 4; ++j) {
-            __m256 result = _mm256_set1_ps(0.0f);
-            for (int k = 0; k < col1_b; k++) {
-                __m256 m1 = _mm256_set_ps(*rpos(mat1, i, (k << 3), col1), *rpos(mat1, i, (k << 3) + 1, col1), 
-                *rpos(mat1, i, (k << 3) + 2, col1), *rpos(mat1, i, (k << 3) + 3, col1), *rpos(mat1, i, (k << 3) + 4, col1),
-                *rpos(mat1, i, (k << 3) + 5, col1), *rpos(mat1, i, (k << 3) + 6, col1), *rpos(mat1, i, (k << 3) + 7, col1));
-                
-                __m256 m2 = _mm256_set_ps(*rpos(mat2_t, j, (k << 3), col1), *rpos(mat2_t, j, (k << 3) + 1, col1), 
-                *rpos(mat2_t, j, (k << 3) + 2, col1), *rpos(mat2_t, j, (k << 3) + 3, col1), *rpos(mat2_t, j, (k << 3) + 4, col1),
-                *rpos(mat2_t, j, (k << 3) + 5, col1), *rpos(mat2_t, j, (k << 3) + 6, col1), *rpos(mat2_t, j, (k << 3) + 7, col1));
-                __m256 m0 = _mm256_mul_ps(m1, m2);
-                result = _mm256_add_ps(result, m0);
-            }
-           _mm256_store_ps(buf2, result);
-            buffer[i * 4 + j] = buf2[0] + buf2[1] + buf2[2] + buf2[3] + buf2[4] + buf2[5] + buf2[6] + buf2[7];
-        }
-    }
-    for (int i = 0; i < 4; ++i) {
-        for (int j = 0; j < 4; ++j) {
-            (*rpos(ansMat, i, j, col2)) = buffer[i * 4 + j];
-        }
-    }
+    
 }
 
 void matmul_improved5_mul44(float *mat1, float *mat2_t, float *ansMat, const size_t row1, const size_t col1, const size_t col2)
