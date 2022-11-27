@@ -1,5 +1,6 @@
 #pragma once
 #include <immintrin.h>
+#include"matfunction.h"
 #include<stdlib.h>
 #include<omp.h>
 #include<malloc.h>
