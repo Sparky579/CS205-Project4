@@ -76,7 +76,7 @@ int main()
     gettimeofday(&start, NULL);
     cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, N, N, N, 1, A, N, B, N, 0, C, N);
     gettimeofday(&end, NULL);
-    printf("%lld\n", 1000000 * (end.tv_sec - start.tv_sec) + end.tv_usec - start.tv_usec);
+    printf("%d\n", 1000000 * (end.tv_sec - start.tv_sec) + end.tv_usec - start.tv_usec);
 
     
 }
